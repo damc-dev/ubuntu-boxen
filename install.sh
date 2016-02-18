@@ -16,7 +16,7 @@ sudo apt-get install git puppet-agent -y -q
 sudo gem install r10k
 # Download uboxen code
 cd /opt
-[ ! -d /opt/ubuntu-boxen ] && sudo git clone --recursive https://github.com/lorello/ubuntu-boxen.git
+[ ! -d /opt/ubuntu-boxen ] && sudo git clone --recursive https://github.com/damc-dev/ubuntu-boxen.git
 cd /opt/ubuntu-boxen
 sudo r10k puppetfile install
 sudo /opt/puppetlabs/puppet/bin/puppet apply install.pp

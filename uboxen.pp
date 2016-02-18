@@ -54,42 +54,6 @@ class profile::puppet::developer {
 
 }
 
-# An error in ZFS package make it unable to start at boot
-# if the system use systemd (the default choice in Vivid)
-# this define get fixed until a fix arrive from PPA
-define profile::zfs::tmpfix() {
-    wget::fetch { $name:
-        source      => "https://raw.githubusercontent.com/zfsonlinux/zfs/master/etc/systemd/system/${name}.in",
-        destination => "/etc/systemd/system/${name}",
-    }->
-    exec { "set-variable-sysconfdir-in-${name}":
-        command => "/bin/sed --in-place 's#@sysconfdir@#/etc#' /etc/systemd/system/${name}",
-        onlyif  => "/bin/grep '@sysconfdir@' /etc/systemd/system/${name}",
-    }->
-    exec { "set-variable-sbindir-in-${name}":
-        command => "/bin/sed --in-place 's#@sbindir@#/sbin#' /etc/systemd/system/${name}",
-        onlyif  => "/bin/grep '@sbindir@' /etc/systemd/system/${name}",
-    }
-}
-
-# Install ZFS ppa to use this wonderful filesystem in your Box
-class profile::zfs {
-
-    contain ::zfs
-
-    if $lsbdistcodename == 'vivid' {
-
-        profile::zfs::tmpfix { 'zed.service': }
-        profile::zfs::tmpfix { 'zfs-import-cache.service': }
-        profile::zfs::tmpfix { 'zfs-import-scan.service': }
-        profile::zfs::tmpfix { 'zfs-mount.service': }
-        profile::zfs::tmpfix { 'zfs-share.service': }
-        profile::zfs::tmpfix { 'zfs.target': }
-
-    }
-
-}
-
 define motd::usernote($content = '') {
   file { "/etc/update-motd.d/60-${name}":
     content  => $content,
@@ -176,71 +140,9 @@ define bash::alias(
     }
 
 }
-
-class profile::phpredis {
-  # Redis server
-  class { 'redis': }
-  # required for php-redis package
-  apt::ppa { 'ppa:ufirst/php' :
-    require => File['/etc/php5/conf.d'],
-  }
-
-  # required for php-redis package
-  file { '/etc/php5/conf.d':
-    ensure => directory,
-  }
-
-  file { '/etc/php5/mods-available/redis.ini':
-    target => '/etc/php5/conf.d/redis.ini',
-    require => Package['php5-redis'],
-  }
-
-  file { '/etc/php5/cli/conf.d/20-redis.ini':
-    target => '../../mods-available/redis.ini',
-  }
-
-  Package['php5-redis'] -> Apt::Ppa['ppa:ufirst/php']
-
-}
-
-# PHP development env
-class profile::phpdev {
-
-  include php
-  Package['php5-dev'] -> Php::Extension <| |> -> Php::Config <| |>
-
-  class {
-    'php::cli':;
-    'php::dev':;
-    'php::pear':;
-    'php::extension::curl':;
-    'php::extension::redis':;
-    'php::composer':;
-    'php::phpunit':;
-  }
-  package {'php5-json':; }
-
-  class { 'composer':
-    require => Package['php5-curl'],
-  }
-}
-
 node generic_desktop {
 
- # General dns conf
-  dnsmasq::conf { 'general-options':
-    content => "no-negcache\nlog-queries\nlog-async=50\n",
-  }
-
-  # Dev Environment
-  dnsmasq::conf { 'resolv-dev.it':
-    content   => 'address=/dev.it/127.0.1.1',
-  }
-  motd::usernote { 'dnsmasq':
-    content => "Domains *.dev.it points to localhost, use it for your dev environments",
-  }
-
-  # Security
+ # Security
   class { 'sudo':
     require	=> Package['ruby-hiera'],
   }
@@ -372,28 +274,7 @@ define profile::vagrant::box(
   }
 }
 
-
-class desktop::proxy(
-  $proxy,
-  $noproxy = '127.0.0.1,127.0.1.1,localhost,*.local',
-){
-  package{ 'polipo': ensure => latest }
-  bash::rc { 'setup polipo as a system wide proxy':
-    content => "export {http,https,ftp}_proxy='http://${proxy}'",
-  }
-  if $noproxy {
-    bash::rc { 'proxy skip rules':
-      content => "export https_no_proxy='${noproxy}'\nexport http_no_proxy='${noproxy}'"
-    }
-  }
-}
-
-node motokosony {
-
-  file { "$unix_home/.xprofile" :
-    content => "SYSRESOURCES=/etc/X11/Xresources\nUSRRESOURCES=\$HOME/.Xresources\n",
-    owner    => $unix_user,
-  }
+node ZEN {
 
   class { 'vim':
     user     => $unix_user,
@@ -460,15 +341,6 @@ node motokosony {
   #}
   vim::rc { 'activate rainbow parenthesis globally':
     content => 'let g:rainbow_active = 1',
-  }
-
-  vagrant::box { 'hhvm':
-    source   => 'https://github.com/javer/hhvm-vagrant-vm',
-    username => $unix_user,
-  }
-
-  class { 'desktop::proxy':
-    proxy => '127.0.0.1:8123',
   }
 }
 

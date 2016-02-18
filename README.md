@@ -8,7 +8,7 @@ Look at [the original Boxen](http://boxen.github.com/) to understand what it is 
 
 Setup
 -----
-    wget -O- -q https://raw.githubusercontent.com/lorello/ubuntu-boxen/master/install.sh | /bin/bash
+    wget -O- -q https://raw.githubusercontent.com/damc-dev/ubuntu-boxen/master/install.sh | /bin/bash
 
 Manage your own hosts
 ---------------------
@@ -16,4 +16,3 @@ Manage your own hosts
     remove my hosts submodule and add your own, hiera will lookup in the path ``data/hosts`
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/lorello/ubuntu-boxen/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
