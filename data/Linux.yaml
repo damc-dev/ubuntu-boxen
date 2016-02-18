@@ -7,7 +7,6 @@ classes:
   - profile::software
   - ssh
   - profile::docker
-  - git
 
 sudo::purge: false
 
@@ -75,14 +74,8 @@ profile::software::packages:
     - 'curl'
     - 'httpie'
     - 'nmap'
-    - 'nethogs'
-    - 'sysdig'
     - 'htop'
     - 'moreutils'
-    - 'openvpn'
-    - 'network-manager-openvpn' #http://howto.praqma.net/ubuntu/vpn/openvpn-access-server-client-on-ubuntu
-    - 'openconnect'
-    - 'network-manager-openconnect'
     - 'nautilus-compare'
     - 'nautilus-script-audio-convert'
     - 'nautilus-script-manager'
@@ -102,25 +95,14 @@ profile::software::packages:
     - 'syslinux-utils'                 # contains md5pass to encrypt unix password
     - 'tcpdump'
     - 'traceroute'
-    - 'dkms'
     - 'gedit'
-    - 'deja-dup'
-    - 'deja-dup-backend-s3'
     - 'ruby'
-    - 'playonlinux'
-    - 'bikeshed'
 
 profile::software::gems:
     - 'r10k'
     - 'deep_merge'
 
 profile::software::ppas:
-    'rael-gc/scudcloud':              # slack client
-        packages:
-            - 'scudcloud'
-    'ubuntu-lxc/lxd-git-master':      # ubuntu system containers
-        packages:
-            - 'lxd'
     'webupd8team/atom':
         packages:
             - 'atom'
@@ -130,12 +112,6 @@ profile::software::ppas:
     'webupd8team/java':
         packages:
             - 'oracle-java6-installer'
-    'peterlevi/ppa':
-        packages:
-            - 'variety'
-    'eugenesan/ppa':
-        packages:
-            - 'smartgit'
     'git-core/ppa':
         packages:
             - 'git'
@@ -168,12 +144,7 @@ profile::software::repos:
         key:        '7B0FAB3A13B907435925D9C954422A4B98AB5139'
         packages:
             - 'virtualbox'
-    'playonlinux':
-        location:   'http://deb.playonlinux.com/'
-        release:    'trusty'
-        repos:      'main'
-        key:        'E0F72778C4676186'
-    'wolfgang42-vagrant':
+   'wolfgang42-vagrant':
         location:   'http://vagrant-deb.linestarve.com/'
         repos:      'main'
         key:        'AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4'
@@ -186,22 +157,9 @@ ssh::client_options:
         ServerAliveInterval: '10'
         HashKnownHosts: 'no'
 
-
 docker::images:
     ubuntu:
         image_tag: 'trusty'
-
-# another class available in hiera:
-# docker::run_instance:
-#    helloworld:
-#        image: 'ubuntu:trusty'
-#        command: '/bin/sh -c "while true; do echo hello world; sleep 1; done"'
-
-#docker::registry_auth::registries:
-#  'example.docker.io:5000':
-#    username: 'user1'
-#    password: 'secret'
-#    email: 'user1@example.io'
 
 git::configs:
   alias.up:
