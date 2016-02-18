@@ -7,6 +7,7 @@ classes:
   - profile::software
   - ssh
   - profile::docker
+  - profile::tmux
 
 sudo::purge: false
 
