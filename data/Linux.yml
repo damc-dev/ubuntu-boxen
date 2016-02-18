@@ -71,11 +71,14 @@ profile::software::ensure  : 'latest'
 profile::software::packages:
     - 'puppet-common'
     - 'vim'
+    - 'tmux'
     - 'curl'
     - 'httpie'
     - 'nmap'
     - 'htop'
     - 'moreutils'
+    - 'openconnect'
+    - 'network-manager-openconnect'
     - 'nautilus-compare'
     - 'nautilus-script-audio-convert'
     - 'nautilus-script-manager'
@@ -111,7 +114,10 @@ profile::software::ppas:
             - 'sublime-text-installer'
     'webupd8team/java':
         packages:
-            - 'oracle-java6-installer'
+            - 'oracle-java7-installer'
+    'peterlevi/ppa':
+        packages:
+            - 'variety'
     'git-core/ppa':
         packages:
             - 'git'
@@ -144,7 +150,7 @@ profile::software::repos:
         key:        '7B0FAB3A13B907435925D9C954422A4B98AB5139'
         packages:
             - 'virtualbox'
-   'wolfgang42-vagrant':
+    'wolfgang42-vagrant':
         location:   'http://vagrant-deb.linestarve.com/'
         repos:      'main'
         key:        'AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4'
@@ -156,6 +162,7 @@ ssh::client_options:
         ForwardX11Trusted: 'yes'
         ServerAliveInterval: '10'
         HashKnownHosts: 'no'
+
 
 docker::images:
     ubuntu:
