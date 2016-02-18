@@ -13,29 +13,6 @@ class profile::gnome::backup {
         }
 
 }
-
-class profile::docker {
-
-    class { '::docker':
-        #version => 'latest',
-        docker_users => [ $profile::owner::username ],
-        dns => '192.168.1.1',
-    }
-
-    # 25/8/2015 lorello
-    # missing config for docker in systemctl
-    # http://nknu.net/how-to-configure-docker-on-ubuntu-15-04/
-    if $lsbdistrelease == '15.04' {
-        file { '/etc/systemd/system/docker.service.d/ubuntu.conf':
-            content => "[Service]\nEnvironmentFile=/etc/default/docker\nExecStart=\nExecStart=/usr/bin/docker -d -H fd:// \$DOCKER_OPTS\n",
-        } ->
-        exec { 'systemctl daemon-reload': }
-        ->
-        exec { 'systemctl restart docker': }
-    }
-
-}
-
 # Puppet dev environment
 class profile::puppet::developer {
 
@@ -165,62 +142,6 @@ node generic_desktop {
   }
 
 }
-
-define profile::vagrant::plugin(
-    $ensure = present,
-) {
-
-    if $ensure == 'present' {
-        exec { "install-${name}":
-            command => "/usr/bin/vagrant plugin install vagrant-${name}",
-            unless  => "/usr/bin/sudo -u ${::profile::owner::username} /usr/bin/vagrant plugin list | grep vagrant-${name}",
-            user    => $::profile::owner::username,
-            environment => "HOME=/home/${::profile::owner::username}",
-        }
-    } else {
-        exec { "uninstall-${name}":
-            command => "/usr/bin/vagrant plugin uninstall vagrant-${name}",
-            onlyif  => "/usr/bin/sudo -u ${::profile::owner::username} /usr/bin/vagrant plugin list | grep vagrant-${name}",
-            user    => $::profile::owner::usernamett,
-            environment => "HOME=/home/${::profile::owner::username}",
-        }
-    }
-}
-
-
-define profile::vagrant::box(
-  $source,
-  $username = 'root',
-){
-
-  include ::profile::vagrant
-
-  $home = $username ? {
-    'root'  => '/root',
-    default => "/home/${username}"
-  }
-
-  if ! defined(File['vagrant-home']) {
-    file { 'vagrant-home':
-      path   => "${home}/vagrant",
-      owner  => $username,
-      ensure => directory,
-    }
-  }
-
-  vcsrepo { "${home}/vagrant/${name}":
-    source   => $source,
-    ensure   => present,
-    provider => git,
-    require  => Package['git'],
-  }
-
-  file { "${home}/vagrant/${name}":
-    owner   => $username,
-    recurse => true,
-  }
-}
-
 node 'ZEN' {
 
   class { 'vim':
@@ -290,50 +211,6 @@ node 'ZEN' {
     content => 'let g:rainbow_active = 1',
   }
 }
-
-define profile::software::repo(
-  $ensure = present,
-  $location,
-  $release = $::lsbdistcodename,
-  $key = undef,
-  $repos = 'main',
-  $packages = [],
-)
-{
-
-  validate_array($packages)
-
-  apt::source { $name:
-    ensure      => $ensure,
-    location    => $location,
-    release     => $release,
-    key         => $key,
-    repos       => $repos,
-  }->
-  package { $packages:
-    ensure => $ensure,
-  }
-
-}
-
-
-class profile::owner(
-  $username,
-  $email,
-  $groups,
-) {
-  user { $username:
-    ensure => present,
-    groups => $groups,
-  }
-
-  sudo::conf { $username:
-    priority => 10,
-    content  => "${username} ALL=(ALL) NOPASSWD: ALL",
-  }
-
-}
-
 # General DEFAULTS
 Exec { path => '/usr/bin:/usr/sbin/:/bin:/sbin' }
 
