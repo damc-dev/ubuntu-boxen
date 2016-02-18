@@ -219,5 +219,5 @@ Wget::Fetch {
 }
 
 node default {
-    hiera_include('classes', [ 'stdlib' ])
+    hiera_include('classes')
 }
