@@ -274,7 +274,7 @@ define profile::vagrant::box(
   }
 }
 
-node ZEN {
+node 'ZEN' {
 
   class { 'vim':
     user     => $unix_user,

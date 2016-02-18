@@ -1,4 +1,7 @@
 # Setup of uboxen
+class { 'r10k':
+  version => '1.3.2'
+}
 
 file { 
   '/usr/local/bin/uboxen':
