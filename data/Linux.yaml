@@ -72,7 +72,6 @@ profile::software::ensure  : 'latest'
 profile::software::packages:
     - 'puppet-common'
     - 'vim'
-    - 'tmux'
     - 'curl'
     - 'httpie'
     - 'nmap'
