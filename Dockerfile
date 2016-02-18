@@ -11,8 +11,9 @@ RUN dpkg -i puppetlabs-release-precise.deb
 # Update & upgrades
 RUN apt-get update -y -q
 
-# Install puppet without the agent init script
-RUN apt-get install puppet-common=2.7.25-1puppetlabs1 git sudo -y -q
+# Install puppet & r10k without the agent init script
+RUN apt-get install puppet-common=3.8.6-1puppetlabs1 git sudo -y -q
+RUN sudo gem install r10k
 
 # Install the app
 RUN cd /opt && git clone https://github.com/damc-dev/ubuntu-boxen.git
