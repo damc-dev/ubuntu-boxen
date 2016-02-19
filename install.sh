@@ -10,7 +10,7 @@ sudo dpkg -i puppetlabs-release-$DISTRO.deb
 sudo apt-get update -y -q
 
 # Install puppet without the agent init script
-sudo apt-get install git puppet-agent -y -q
+sudo apt-get install git puppet -y -q
 
 # Get & run librarian-puppet
 sudo gem install r10k
