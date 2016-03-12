@@ -94,11 +94,11 @@ profile::software::packages:
     - 'aptitude'
     - 'ppa-purge'
     - 'pwgen'
-    - 'syslinux-utils'                 # contains md5pass to encrypt unix password
     - 'tcpdump'
     - 'traceroute'
     - 'gedit'
     - 'ruby'
+    - 'openjdk-7-jdk'
 
 profile::software::gems:
     - 'r10k'
@@ -112,11 +112,9 @@ profile::software::ppas:
         packages:
             - 'sublime-text-installer'
     'webupd8team/java':
+        preinstall: 'echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections && echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections'
         packages:
             - 'oracle-java7-installer'
-    'peterlevi/ppa':
-        packages:
-            - 'variety'
     'git-core/ppa':
         packages:
             - 'git'

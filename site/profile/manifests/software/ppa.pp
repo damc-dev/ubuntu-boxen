@@ -1,6 +1,7 @@
 define profile::software::ppa(
   $ensure  = latest,
   $packages = [],
+  $preinstall = undef,
 )
 {
     apt::ppa { "ppa:${name}": }
@@ -8,11 +9,22 @@ define profile::software::ppa(
     validate_array($packages)
 
     if $packages {
-        package { $packages:
+        if $preinstall {
+          exec { $preinstall:
+            path => ["/usr/bin", "/usr/sbin"],
+          }
+
+          package { $packages:
+            ensure  => $ensure,
+            require => [ Apt::Ppa["ppa:${name}"], exec[$preinstall] ]
+          }
+        } else {
+          package { $packages:
             ensure  => $ensure,
             require => Apt::Ppa["ppa:${name}"],
+          }
+
         }
+
     }
 }
-
-
