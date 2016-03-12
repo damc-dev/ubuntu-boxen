@@ -3,6 +3,7 @@ classes:
   - profile::owner
   - profile::puppet::developer
   - profile::vagrant
+  - profile::docker
 
 profile::owner::username : 'david'
 profile::owner::email    : 'damcelligott@gmail.com'
